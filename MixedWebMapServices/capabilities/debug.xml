@@ -1,0 +1,84 @@
+<WMT_MS_Capabilities updateSequence="0" version="1.1.1">
+	<Service>
+		<Name>OGC:WMS</Name>
+		<Title>Mixed Web Map Services</Title>
+		<Abstract>Mixed Web Map Services From LCS</Abstract>
+		<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://%s/debug" xlink:type="simple"/>
+		<ContactInformation>
+			<ContactPersonPrimary>
+				<ContactPerson/>
+				<ContactOrganization>LCS Department</ContactOrganization>
+			</ContactPersonPrimary>
+		</ContactInformation>
+		<AccessConstraints>none</AccessConstraints>
+	</Service>
+	<Capability>
+		<Request>
+			<GetCapabilities>
+				<!-- <Format>application/vnd.ogc.wms_xml</Format> -->
+				<DCPType>
+					<HTTP>
+						<Get>
+							<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://%s/debug" xlink:type="simple"/>
+						</Get>
+					</HTTP>
+				</DCPType>
+			</GetCapabilities>
+			<GetMap>
+				<Format>image/png</Format>
+				<DCPType>
+					<HTTP>
+						<Get>
+							<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://%s/debug" xlink:type="simple"/>
+						</Get>
+					</HTTP>
+				</DCPType>
+			</GetMap>
+		</Request>
+		<!-- <Exception>
+			<Format>application/vnd.ogc.se_xml</Format>
+			<Format>application/vnd.ogc.se_inimage</Format>
+		</Exception> -->
+		<Layer>
+			<Title>MapTile</Title>
+			<SRS>EPSG:4326</SRS>
+			<SRS>EPSG:3857</SRS>
+			<Layer opaque="1">
+				<Name>Debug</Name>
+				<Title>Debug图层</Title>
+				<SRS>EPSG:4326</SRS>
+				<SRS>EPSG:3857</SRS>
+				<KeywordList>
+					<Keyword>Debug</Keyword>
+				</KeywordList>
+				<LatLonBoundingBox maxx="135.2653" maxy="53.503425" minx="73.34" miny="1.674135"/>
+				<BoundingBox SRS="EPSG:3857" maxx="15057664.318" maxy="7076666.28165" minx="8164171.45478" miny="186390.379708" resx="0.40172604" resy="-0.40172604"/>
+				<BoundingBox SRS="EPSG:4326" maxx="135.2653" maxy="53.503425" minx="73.34" miny="1.674135"/>
+			</Layer>
+			<Layer opaque="2">
+				<Name>Amap</Name>
+				<Title>高德地图（原始）</Title>
+				<SRS>EPSG:4326</SRS>
+				<SRS>EPSG:3857</SRS>
+				<KeywordList>
+					<Keyword>Amap</Keyword>
+				</KeywordList>
+				<LatLonBoundingBox maxx="135.2653" maxy="53.503425" minx="73.34" miny="1.674135"/>
+				<BoundingBox SRS="EPSG:3857" maxx="15057664.318" maxy="7076666.28165" minx="8164171.45478" miny="186390.379708" resx="0.40172604" resy="-0.40172604"/>
+				<BoundingBox SRS="EPSG:4326" maxx="135.2653" maxy="53.503425" minx="73.34" miny="1.674135"/>
+			</Layer>
+			<Layer opaque="3">
+				<Name>Amap_Convert</Name>
+				<Title>高德地图（坐标转换后）</Title>
+				<SRS>EPSG:4326</SRS>
+				<SRS>EPSG:3857</SRS>
+				<KeywordList>
+					<Keyword>Amap</Keyword>
+				</KeywordList>
+				<LatLonBoundingBox maxx="135.2653" maxy="53.503425" minx="73.34" miny="1.674135"/>
+				<BoundingBox SRS="EPSG:3857" maxx="15057664.318" maxy="7076666.28165" minx="8164171.45478" miny="186390.379708" resx="0.40172604" resy="-0.40172604"/>
+				<BoundingBox SRS="EPSG:4326" maxx="135.2653" maxy="53.503425" minx="73.34" miny="1.674135"/>
+			</Layer>
+		</Layer>
+	</Capability>
+</WMT_MS_Capabilities>
