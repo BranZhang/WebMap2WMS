@@ -126,7 +126,7 @@ CORS_ORIGIN_WHITELIST = (
 DEFALT_TILE_SIZE = 256
 
 AMAP = {
-    'AMAP_KEY': '1a98a360b75f848b606520319ebeb2ad',
+    'AMAP_KEY': '<你的高德key>',
     'AMAP_TILE_API': ('http://restapi.amap.com/v3/staticmap?size=%d*%d'
                       '&paths=2,0x000000,%d,,:%s,%s;%s,%s;%s,%s;%s,%s;%s,%s&key=%s'),
     'AMAP_TILE_MAX_SIZE': 1024,

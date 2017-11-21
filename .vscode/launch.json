@@ -68,7 +68,7 @@
             "request": "launch",
             "stopOnEntry": false,
             "pythonPath": "${config:python.pythonPath}",
-            "program": "${workspaceRoot}/manage.py",
+            "program": "${workspaceRoot}/servicescode/manage.py",
             "cwd": "${workspaceRoot}",
             "args": [
                 "runserver",

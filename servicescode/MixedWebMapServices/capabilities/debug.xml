@@ -7,7 +7,7 @@
 		<ContactInformation>
 			<ContactPersonPrimary>
 				<ContactPerson/>
-				<ContactOrganization>LCS Department</ContactOrganization>
+				<ContactOrganization></ContactOrganization>
 			</ContactPersonPrimary>
 		</ContactInformation>
 		<AccessConstraints>none</AccessConstraints>

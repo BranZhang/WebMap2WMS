@@ -50,11 +50,10 @@ def debug_map_tile(request):
 
 def get_debug_capability(http_host):
     capabilities = open(
-        r'MixedWebMapServices\capabilities\debug.xml').read()
+        r'servicescode\MixedWebMapServices\capabilities\debug.xml').read()
     response = HttpResponse(
         capabilities % (http_host, http_host, http_host), content_type="text/xml")
     return response
-
 
 
 def get_debug_map(width, height, locations):
@@ -68,7 +67,8 @@ def get_debug_map(width, height, locations):
     debug_info = ("width:%d\nheight:%d\n"
                   "left_bottom_lon:%s\nleft_bottom_lat:%s\n"
                   "right_top_lon:%s\nright_top_lat:%s")
-    text = debug_info % (width, height, locations[0], locations[1], locations[2], locations[3])
+    text = debug_info % (
+        width, height, locations[0], locations[1], locations[2], locations[3])
 
     draw_object.text([10, 10], text)
 
@@ -170,6 +170,7 @@ def get_amap_map(width, height, locations, coordinate_convert=False):
 
     response = HttpResponse(img_byte_arr, content_type="image/png")
     return response
+
 
 def get_image_by_url(url):
     request = urllib2.Request(url)
