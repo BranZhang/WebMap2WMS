@@ -1,13 +1,18 @@
+'''
+map tile service
+'''
 import io
 import StringIO
 import urllib2
 import json
 import re
 import random
+import datetime
 
 from MixedWebMapServices.settings import AMAP, DEFALT_TILE_SIZE
 from PIL import Image, ImageDraw
 from django.http import HttpResponse
+from Tile.models import TileCache
 
 
 def debug_map_tile(request):
@@ -82,8 +87,20 @@ def get_debug_map(width, height, locations):
 
 def get_amap_map(width, height, locations, coordinate_convert=False):
 
-    if coordinate_convert:
+    cache_search = TileCache.objects.filter(
+        tile_info=get_tile_info(coordinate_convert, width, height, locations))
 
+    need_refresh = False
+    if len(cache_search) == 0:
+        print "no cache"
+    else:
+        if (datetime.date.today() - cache_search[0].create_time).days < 30:
+            response = HttpResponse(cache_search[0].image, content_type="image/png")
+            return response
+        else:
+            need_refresh = True
+
+    if coordinate_convert:
         request = urllib2.Request(AMAP['COORDINATE_CONVERT_API'] % (
             locations[0], locations[1], locations[2], locations[3], AMAP['AMAP_KEY']))
         coordinate_data = urllib2.urlopen(request).read()
@@ -102,53 +119,51 @@ def get_amap_map(width, height, locations, coordinate_convert=False):
 
     img = get_image_by_url(url).convert("RGBA")
 
-    width, height = img.size
-
     picked = False
-    for i in range(0, width):
+    for i in range(0, target_width):
         if not picked:
-            if img.getpixel((i, height / 2)) == (0, 0, 0, 255):
+            if img.getpixel((i, target_height / 2)) == (0, 0, 0, 255):
                 picked = True
                 temp = i
                 continue
         else:
-            if img.getpixel((i, height / 2)) != (0, 0, 0, 255):
+            if img.getpixel((i, target_height / 2)) != (0, 0, 0, 255):
                 left_width_cut = (temp + i) / 2
                 break
 
     picked = False
-    for i in range(width - 1, -1, -1):
+    for i in range(target_width - 1, -1, -1):
         if not picked:
-            if img.getpixel((i, height / 2)) == (0, 0, 0, 255):
+            if img.getpixel((i, target_height / 2)) == (0, 0, 0, 255):
                 picked = True
                 temp = i
                 continue
         else:
-            if img.getpixel((i, height / 2)) != (0, 0, 0, 255):
+            if img.getpixel((i, target_height / 2)) != (0, 0, 0, 255):
                 right_width_cut = (temp + i) / 2
                 break
 
     picked = False
-    for j in range(0, height):
+    for j in range(0, target_height):
         if not picked:
-            if img.getpixel((width / 2, j)) == (0, 0, 0, 255):
+            if img.getpixel((target_width / 2, j)) == (0, 0, 0, 255):
                 picked = True
                 temp = j
                 continue
         else:
-            if img.getpixel((width / 2, j)) != (0, 0, 0, 255):
+            if img.getpixel((target_width / 2, j)) != (0, 0, 0, 255):
                 left_height_cut = (temp + j) / 2.0
                 break
 
     picked = False
-    for j in range(height - 1, -1, -1):
+    for j in range(target_height - 1, -1, -1):
         if not picked:
-            if img.getpixel((width / 2, j)) == (0, 0, 0, 255):
+            if img.getpixel((target_width / 2, j)) == (0, 0, 0, 255):
                 picked = True
                 temp = j
                 continue
         else:
-            if img.getpixel((width / 2, j)) != (0, 0, 0, 255):
+            if img.getpixel((target_width / 2, j)) != (0, 0, 0, 255):
                 right_height_cut = (temp + j) / 2.0
                 break
 
@@ -168,7 +183,26 @@ def get_amap_map(width, height, locations, coordinate_convert=False):
     out.save(img_byte_arr, format='PNG')
     img_byte_arr = img_byte_arr.getvalue()
 
+    if need_refresh:
+        tile = TileCache.objects.get(
+            tile_info=get_tile_info(coordinate_convert, width, height, locations))
+        tile.image = img_byte_arr
+        tile.create_time = datetime.date.today()
+        tile.save()
+    else:
+        database_image = TileCache(
+            tile_info=get_tile_info(coordinate_convert, width, height, locations),
+            image=img_byte_arr,
+            create_time=datetime.date.today())
+        database_image.save()
+
     response = HttpResponse(img_byte_arr, content_type="image/png")
+    return response
+
+
+def test_database(request):
+    response = HttpResponse(json.dumps(
+        {'state': True}), content_type="application/json")
     return response
 
 
@@ -177,6 +211,17 @@ def get_image_by_url(url):
     img_data = urllib2.urlopen(request).read()
     img_buffer = StringIO.StringIO(img_data)
     return Image.open(img_buffer)
+
+
+def get_tile_info(coordinate_convert, width, height, locations):
+    if coordinate_convert:
+        tile_info_type = '01'
+    else:
+        tile_info_type = '02'
+    return '%s;%s,%s;%s,%s;%s,%s' % (
+        tile_info_type, width, height,
+        round(float(locations[0]), 8), round(float(locations[1]), 8),
+        round(float(locations[2]), 8), round(float(locations[3]), 8))
 
 
 # from pyproj import Proj, transform

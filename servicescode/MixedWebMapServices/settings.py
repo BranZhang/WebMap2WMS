@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'Tile',
 ]
 
 MIDDLEWARE = [
@@ -75,8 +76,13 @@ WSGI_APPLICATION = 'MixedWebMapServices.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'osm_china_amap',
+        'USER': 'postgres',
+        'PASSWORD': 'qq281134181',
+        'HOST': '127.0.0.1',
+        'PORT': 5432,
+        'TABLE':'tile_cache',
     }
 }
 
@@ -126,7 +132,7 @@ CORS_ORIGIN_WHITELIST = (
 DEFALT_TILE_SIZE = 256
 
 AMAP = {
-    'AMAP_KEY': '<你的高德key>',
+    'AMAP_KEY': '<your key>',
     'AMAP_TILE_API': ('http://restapi.amap.com/v3/staticmap?size=%d*%d'
                       '&paths=2,0x000000,%d,,:%s,%s;%s,%s;%s,%s;%s,%s;%s,%s&key=%s'),
     'AMAP_TILE_MAX_SIZE': 1024,

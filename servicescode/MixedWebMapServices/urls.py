@@ -18,4 +18,5 @@ import MixedWebMapServices.MapTileView as MapTileView
 
 urlpatterns = [
     url(r'debug', MapTileView.debug_map_tile),
+    url(r'testdb', MapTileView.test_database),
 ]
